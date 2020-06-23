@@ -4,10 +4,7 @@ import * as firebaseHelper from 'firebase-functions-helper';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
-admin.initializeApp({
-    credential: admin.credential.cert(require("../../serviceAccountKey.json")),
-    databaseURL: "https://consultoriovet-eb010.firebaseio.com"
-});
+admin.initializeApp(functions.config().firebase);
 
 const db = admin.firestore();
 const app = express();
