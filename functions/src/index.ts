@@ -5,7 +5,10 @@ import * as bodyParser from 'body-parser';
 
 //=========================CONFIG===========================//
 
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp({
+    credential: admin.credential.cert(require("../../serviceAccountKey.json")),
+    databaseURL: "https://consultoriovet-eb010.firebaseio.com"
+});
 
 const db = admin.firestore();
 db.settings({ignoreUndefinedProperties : true});
@@ -20,4 +23,3 @@ main.use('/api', require('./consult').routes);
 
 export const api = functions.https.onRequest(main);
 export { db };
-
