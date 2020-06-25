@@ -108,21 +108,28 @@ routes.post('/pets/:id/vaccines', async(req, res)=>{
     });
 });
 
-routes.get('/pets/:id/vaccines/:idVacc', async (req, res)=>{
+routes.get('/pets/:id/vaccines/:idVacc', (req, res)=>{
     var petRef = db.collection(collection).doc(req.params.id).collection('vaccines').doc(req.params.idVacc);
     petRef.get().then( doc => {
         res.status(201).send(doc.data())
-    });
+    }).catch(err=> res.status(400).send(`An error has ocurred ${err}`));
+    
 });
 
 routes.get('/pets/:id/vaccines', async(req, res) => {
     var vaccslist = db.collection(collection).doc(req.params.id).collection("vaccines");
     vaccslist.get().then( list => {
         res.status(201).send(list.docs.map(doc => doc.data()))
-    });
+    }).catch(err=> res.status(400).send(`An error has ocurred ${err}`));
 
 });
 
+routes.delete('/pets/:id/vaccines/:idVacc', async(req, res) => {
+    var deleVacc = db.collection(collection).doc(req.params.id).collection('vaccines').doc(req.params.idVacc);
+    deleVacc.delete().then(doc => {
+        res.status(201).send(`Vaccine was deleted ${doc}`)
+    }).catch(err => res.status(400).send(`An error has ocurred ${err}`));
+});
 
 export { routes };
 
