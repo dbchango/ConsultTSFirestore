@@ -7,20 +7,24 @@ const db = main.db;
 const collection = "clients";
 
 interface Client {
+    ci: string,
+    phone: string,
     name: string,
-    register: string, 
-    direction: string
-    
+    age: number, 
+    direction: string,
+    gender: string
 }
 
 //Adding clients function
 routes.post('/clients', async(req, res)=>{
     try{
         const newClient : Client ={
+            ci: req.body["ci"],
+            phone: req.body["phone"],
+            age: req.body["age"],
             name: req.body["name"],
-            register: req.body["register"], 
-            direction: req.body["direction"]
-            
+            direction: req.body["direction"],
+            gender: req.body["gender"]
         };     
         const clientAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newClient);
@@ -45,12 +49,15 @@ routes.get('/clients/:id', async(req, res)=>{
 routes.patch('/clients/:id', async(req, res)=>{
     try{
         var id = req.params.id;
-        const client : Client ={
+        const newClient : Client ={
+            ci: req.body["ci"],
+            phone: req.body["phone"],
+            age: req.body["age"],
             name: req.body["name"],
-            register: req.body["register"], 
-            direction: req.body["direction"]
-        };   
-        await firebaseHelper.firestore.updateDocument(db, collection, id, client);
+            direction: req.body["direction"],
+            gender: req.body["gender"]
+        };      
+        await firebaseHelper.firestore.updateDocument(db, collection, id, newClient);
         res.status(201).send(`Client with id ${id} was updated`);
     }catch(err){
         res.status(400).send(`An error has ocurred ${err}`);

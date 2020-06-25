@@ -10,7 +10,10 @@ interface Consult {
     date: Date,
     observation: string,
     price: number,
-    idPet: string
+    responsable: string,
+    state: number, 
+    idPet: string,
+    idClient: String
 }
 
 routes.post('/consults', async (req, res) => {           
@@ -19,7 +22,10 @@ routes.post('/consults', async (req, res) => {
             date: new Date(),
             observation: req.body['observation'],
             price: req.body['price'],
-            idPet: req.body['idPet']
+            idPet: req.body['idPet'],
+            idClient: req.body['idClient'],
+            responsable: req.body['responsable'],
+            state: req.body["state"], 
         };      
         const consAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newConsult);
@@ -40,13 +46,16 @@ routes.get('/consults/:id', (req,res)=>{
 routes.patch('/consults/:id', async(req, res) => {
     try{       
         var id = req.params.id;
-        const pet : Consult = {
+        const consult : Consult = {
             date: new Date(),
             observation: req.body['observation'],
             price: req.body['price'],
-            idPet: req.body['idPet']
+            idPet: req.body['idPet'],
+            idClient: req.body['idClient'],
+            responsable: req.body['responsable'],
+            state: req.body["state"]
         };      
-        await firebaseHelper.firestore.updateDocument(db, collection, id, pet);
+        await firebaseHelper.firestore.updateDocument(db, collection, id, consult);
         res.status(200).send(`Consult with id ${id} was updated`);
     }
     catch(err){

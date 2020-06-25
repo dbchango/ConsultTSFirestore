@@ -11,15 +11,15 @@ interface Pet {
     color: string, 
     age: number,
     idClient: string, 
-    idType: string
-}
+    idType: string,
+    sex: string
+};
 
 interface Vaccine {
     date: Date,
     responsable: string,
     observation: string
-}
-
+};
 
 routes.post('/pets', async (req, res) => {           
     try{            
@@ -28,7 +28,8 @@ routes.post('/pets', async (req, res) => {
             color: req.body['color'],
             age: req.body['age'],
             idClient: req.body['idClient'],
-            idType: req.body['idType']
+            idType: req.body['idType'],
+            sex: req.body["sex"]
         };      
         const petAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newPet);
@@ -54,7 +55,8 @@ routes.patch('/pets/:id', async(req, res) => {
             color: req.body['color'],
             age: req.body['age'],
             idClient: req.body['idClient'],
-            idType: req.body['idType']
+            idType: req.body['idType'],
+            sex: req.body["sex"]
         }; 
         await firebaseHelper.firestore.updateDocument(db, collection, id, pet);
         res.status(200).send(`Pet with id ${id} was updated`);

@@ -4,17 +4,16 @@ import * as Router from 'express';
 
 const routes = Router();
 const db = main.db;
-const collection = "pet_type";
+const collection = "pettypess";
 
 interface PetType {
     name: string
 }
 
-routes.post('/perttypes', async (req, res) => {           
+routes.post('/pettypes', async (req, res) => {           
     try{            
         const newPetType : PetType = {
             name: req.body['name']
-            
         };      
         const petTypeAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newPetType);
