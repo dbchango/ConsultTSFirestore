@@ -2,7 +2,6 @@ import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
 
-
 const routes = Router();
 const db = main.db;
 const collection = "pets";
@@ -23,9 +22,9 @@ interface Vaccine {
     observation: string
 };
 
-
-
-
+//--------------------------------------------------------------------------------------------------------////
+//------------------------------------------------Pets CRUD`s --------------------------------------------////
+//--------------------------------------------------------------------------------------------------------////
 routes.post('/pets', async (req, res) => {           
     try{            
         const newPet : Pet = {
@@ -36,11 +35,9 @@ routes.post('/pets', async (req, res) => {
             idType: req.body['idType'],
             sex: req.body["sex"],
         };      
-        
         const petAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newPet);
         res.status(201).send(`Pet was added to collection with id ${petAdded.id}`);
-                
     }
     catch(err){
         res.status(400).send(`An error has ocurred ${err}`)
@@ -52,7 +49,6 @@ routes.get('/pets/:id', (req,res)=>{
         .getDocument(db, collection, req.params.id)
         .then(doc => res.status(200).send(doc))
         .catch(err => res.status(400).send(`An error has ocurred ${err}`));
-        
 });
 
 routes.patch('/pets/:id', async(req, res) => {
@@ -90,7 +86,9 @@ routes.get('/pets', (req, res) =>{
         .then(result => res.status(200).send(result))
         .catch(err => res.status(400).send(`An error has ocurred ${err}`));
 });
-
+//--------------------------------------------------------------------------------------------------------////
+//------------------------------------------------Vaccine CRUD`s------------------------------------------////
+//--------------------------------------------------------------------------------------------------------////
 routes.post('/pets/:id/vaccines', async(req, res)=>{
     let varId = req.params.id;
     const newVaccine : Vaccine = {
@@ -113,7 +111,6 @@ routes.get('/pets/:id/vaccines/:idVacc', (req, res)=>{
     petRef.get().then( doc => {
         res.status(201).send(doc.data())
     }).catch(err=> res.status(400).send(`An error has ocurred ${err}`));
-    
 });
 
 routes.get('/pets/:id/vaccines', async(req, res) => {
@@ -129,6 +126,19 @@ routes.delete('/pets/:id/vaccines/:idVacc', async(req, res) => {
     deleVacc.delete().then(doc => {
         res.status(201).send(`Vaccine was deleted ${doc}`)
     }).catch(err => res.status(400).send(`An error has ocurred ${err}`));
+});
+
+routes.patch('/pets/:id/vaccines/:idVacc', async(req, res) => {
+    const newVaccine : Vaccine = {
+        date: new Date(),
+        name: req.body['name'],
+        observation: req.body['observation'],
+        responsable: req.body['responsable']
+    };
+    db.collection(collection).doc(req.params.id).collection('vaccines').doc(req.params.idVacc).set(newVaccine)
+    .then(doc => res.status(200).send(`Vaccine was updeted correctly ${doc}`))
+    .catch(err => res.status(400).send(`An error has ocurred ${err}`));
+        
 });
 
 export { routes };
