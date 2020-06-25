@@ -4,7 +4,7 @@ import * as Router from 'express';
 
 const routes = Router();
 const db = main.db;
-const collection = "pettypess";
+const collection = "pettypes";
 
 interface PetType {
     name: string

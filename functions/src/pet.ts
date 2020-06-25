@@ -2,6 +2,7 @@ import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
 
+
 const routes = Router();
 const db = main.db;
 const collection = "pets";
@@ -17,9 +18,13 @@ interface Pet {
 
 interface Vaccine {
     date: Date,
+    name: string, 
     responsable: string,
     observation: string
 };
+
+
+
 
 routes.post('/pets', async (req, res) => {           
     try{            
@@ -29,11 +34,13 @@ routes.post('/pets', async (req, res) => {
             age: req.body['age'],
             idClient: req.body['idClient'],
             idType: req.body['idType'],
-            sex: req.body["sex"]
+            sex: req.body["sex"],
         };      
+        
         const petAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newPet);
         res.status(201).send(`Pet was added to collection with id ${petAdded.id}`);
+                
     }
     catch(err){
         res.status(400).send(`An error has ocurred ${err}`)
@@ -45,6 +52,7 @@ routes.get('/pets/:id', (req,res)=>{
         .getDocument(db, collection, req.params.id)
         .then(doc => res.status(200).send(doc))
         .catch(err => res.status(400).send(`An error has ocurred ${err}`));
+        
 });
 
 routes.patch('/pets/:id', async(req, res) => {
@@ -87,6 +95,7 @@ routes.post('/pets/:id/vaccines', async(req, res)=>{
     let varId = req.params.id;
     const newVaccine : Vaccine = {
         date: new Date(),
+        name: req.body['body'],
         observation: req.body['observation'],
         responsable: req.body['responsable']
     };
@@ -98,6 +107,22 @@ routes.post('/pets/:id/vaccines', async(req, res)=>{
         res.status(400).send(`An error has ocurred ${err}`);
     });
 });
+
+routes.get('/pets/:id/vaccines/:idVacc', async (req, res)=>{
+    var petRef = db.collection(collection).doc(req.params.id).collection('vaccines').doc(req.params.idVacc);
+    petRef.get().then( doc => {
+        res.status(201).send(doc.data())
+    });
+});
+
+routes.get('/pets/:id/vaccines', async(req, res) => {
+    var vaccslist = db.collection(collection).doc(req.params.id).collection("vaccines");
+    vaccslist.get().then( list => {
+        res.status(201).send(list.docs.map(doc => doc.data()))
+    });
+
+});
+
 
 export { routes };
 
