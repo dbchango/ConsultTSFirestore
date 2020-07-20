@@ -1,4 +1,4 @@
-import * as main from './index';
+/*import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
 
@@ -7,7 +7,20 @@ const db = main.db;
 const collection = "pettypes";
 
 interface PetType {
+    idpettype?: string,
     name: string
+}
+
+////------------------------------------------------------------------------------------------------------////
+///---------------------------------------------Methods---------------------------------------------------////
+//--------------------------------------------------------------------------------------------------------////
+
+function getPetType(id: string, data:any){
+    let object: PetType = {
+        idpettype: id,
+        name: data.name
+    }
+    return object
 }
 
 //--------------------------------------------------------------------------------------------------------////
@@ -21,31 +34,31 @@ routes.post('/pettypes', async (req, res) => {
         };      
         const petTypeAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newPetType);
-        res.status(201).send(`Pet type was added to collection with id ${petTypeAdded.id}`);
+        res.status(201).json(main.Message('Pet added', `Pet type was added with id: ${petTypeAdded.id}`, 'success'));
     }
     catch(err){
-        res.status(400).send(`An error has ocurred ${err}`)
+        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'))
     }
 });
 
 routes.get('/pettypes/:id', (req,res)=>{    
     firebaseHelper.firestore
         .getDocument(db, collection, req.params.id)
-        .then(doc => res.status(200).send(doc))
-        .catch(err => res.status(400).send(`An error has ocurred ${err}`));
+        .then(doc => res.status(200).json(getPetType(doc.id, doc)))
+        .catch(err => res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));
 });
 
-routes.patch('/pettypes/:id', async(req, res) => {
+routes.put('/pettypes/:id', async(req, res) => {
     try{       
         var id = req.params.id;
         const pettype : PetType = {
             name: req.body['name']
         }; 
         await firebaseHelper.firestore.updateDocument(db, collection, id, pettype);
-        res.status(200).send(`Pet type with id ${id} was updated`);
+        res.status(200).json(main.Message('Pet type was added', `Pet type with id ${id} was updated`, 'success'));
     }
     catch(err){
-        res.status(400).send(`An error has ocurred ${err}`);
+        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'));
     }
 });
 
@@ -53,18 +66,22 @@ routes.delete('/pettypes/:id', async (request, response) => {
     try{        
         let id = request.params.id;
         await firebaseHelper.firestore.deleteDocument(db, collection, id);
-        response.status(200).send(`Pet type document with id ${id} was deleted`);
+        response.status(200).json(main.Message('Pet type was added', `Pet type with id ${id} was deleted`, 'success'));
     }
     catch(err){
-        response.status(400).send(`An error has ocurred ${err}`);
+        response.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'));
     }
 });
 
 routes.get('/pettypes', (req, res) =>{     
     firebaseHelper.firestore.backup(db, collection)
-        .then(result => res.status(200).send(result))
-        .catch(err => res.status(400).send(`An error has ocurred ${err}`));
+        db.collection(collection).get()
+        .then(
+            snapshot=>{
+                res.status(200).json(snapshot.docs.map(doc=>getPetType(doc.id, doc.data())))
+            }
+        ).catch(err => res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));
 });
 
 export { routes };
-
+*/
