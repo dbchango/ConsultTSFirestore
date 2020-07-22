@@ -1,7 +1,7 @@
 import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
-import { Client } from './models';
+import { Client, Message } from './models';
 
 const routes = Router();
 const db = main.db;
@@ -24,9 +24,9 @@ routes.post('/clients', async(req, res)=>{
         };     
         const clientAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newClient);
-        res.status(201).json(main.Message('Client added', `Client was added with id: ${clientAdded.id}`, 'success'));
+        res.status(201).json(Message('Client added', `Client was added with id: ${clientAdded.id}`, 'success'));
     }catch(err){
-        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'));
+        res.status(400).json(Message('An error has ocurred', `${err}`, 'error'));
     }
 });
 
@@ -38,7 +38,7 @@ routes.get('/clients/:id', async(req, res)=>{
             doc=>{
                 res.status(200).json(Client(doc.data(), doc.id ));
             }
-        ).catch(err => res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));
+        ).catch(err => res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
         /*
         await firebaseHelper.firestore.getDocument(db, collection, varId)
         .then(doc =>  res.status(200).json(getClient(req.params.id, doc))
@@ -60,9 +60,9 @@ routes.put('/clients/:id', async(req, res)=>{
             gender: req.body["gender"]=== undefined ? null:req.body["gender"]
         };      
         await firebaseHelper.firestore.updateDocument(db, collection, id, newClient);
-        res.status(201).json(main.Message('Client updated', `Client with id: ${id} has been updated`, 'success'));
+        res.status(201).json(Message('Client updated', `Client with id: ${id} has been updated`, 'success'));
     }catch(err){
-        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'));
+        res.status(400).json(Message('An error has ocurred', `${err}`, 'error'));
     }
 });
 
@@ -71,9 +71,9 @@ routes.delete('/clients/:id', async(req, res)=>{
     let varId = req.params.id;
     try{
         await firebaseHelper.firestore.deleteDocument(db, collection, varId);
-        res.status(201).json(main.Message('Client deleted', `Client with id:${varId} has been deleted`,'success' ))
+        res.status(201).json(Message('Client deleted', `Client with id:${varId} has been deleted`,'success' ))
     }catch(err){
-        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'));
+        res.status(400).json(Message('An error has ocurred', `${err}`, 'error'));
     }
 });
 
@@ -82,7 +82,7 @@ routes.get('/clients', (req, res)=>{
     db.collection(collection).get().then(
         snapshot=>{
         res.status(200).json(snapshot.docs.map(doc=>Client(doc.data(), doc.id)));
-    }).catch(err=>res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));
+    }).catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
 
 export { routes };

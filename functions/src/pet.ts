@@ -1,7 +1,7 @@
 import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
-import { Pet } from './models';
+import { Pet, Message } from './models';
 
 const routes = Router();
 const db = main.db;
@@ -22,13 +22,12 @@ routes.post('/pets', async (req, res) => {
             type: req.body['type'],
             sex: req.body["sex"],
         };      
-        
         const petAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newPet);
-        res.status(201).json(main.Message('Pet added', `Pet with id: ${petAdded.id} was added`, 'error'));
+        res.status(201).json(Message('Pet added', `Pet with id: ${petAdded.id} was added`, 'error'));
     }
     catch(err){
-        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'))
+        res.status(400).json(Message('An error has ocurred', `${err}`, 'error'))
     }
 });
 
@@ -36,7 +35,7 @@ routes.get('/pets/:id', (req,res)=>{
     firebaseHelper.firestore
         .getDocument(db, collection, req.params.id)
         .then(doc => res.status(200).json(Pet(doc.id, doc)))
-        .catch(err => res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));
+        .catch(err => res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
 
 routes.put('/pets/:id', async(req, res) => {
@@ -51,10 +50,10 @@ routes.put('/pets/:id', async(req, res) => {
             sex: req.body["sex"]===undefined?null:req.body["sex"]
         }; 
         await firebaseHelper.firestore.updateDocument(db, collection, id, pet);
-        res.status(200).json(main.Message('Pet was updated', `Pet with id: ${id} was updated`, 'success'));
+        res.status(200).json(Message('Pet was updated', `Pet with id: ${id} was updated`, 'success'));
     }
     catch(err){
-        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'));
+        res.status(400).json(Message('An error has ocurred', `${err}`, 'error'));
     }
 });
 
@@ -62,10 +61,10 @@ routes.delete('/pets/:id', async (request, response) => {
     try{        
         let id = request.params.id;
         await firebaseHelper.firestore.deleteDocument(db, collection, id);
-        response.status(200).json(main.Message('Pet has been deleted', `Pet with id ${id} was deleted`, 'success'));
+        response.status(200).json(Message('Pet has been deleted', `Pet with id ${id} was deleted`, 'success'));
     }
     catch(err){
-        response.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'));
+        response.status(400).json(Message('An error has ocurred', `${err}`, 'error'));
     }
 });
 
@@ -74,7 +73,7 @@ routes.get('/pets', (req, res) =>{
     .then(snapshot=>{
         res.status(200).json(snapshot.docs.map(doc=>Pet(doc.id, doc.data())));
     })
-    .catch(err=>res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));
+    .catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
 
 

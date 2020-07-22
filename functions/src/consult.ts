@@ -1,7 +1,7 @@
 import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
-import { Pet, Consult, Client } from './models';
+import { Pet, Consult, Client, Message } from './models';
 
 const routes = Router();
 const db = main.db;
@@ -28,10 +28,10 @@ routes.post('/consults', async (req, res) => {
         newConsult.client = Client(client.data(), client.id);
         const id = (await db.collection(collection).add(newConsult)).id;
         console.log(id);
-        res.status(201).json(main.Message('Consult added', `Consult with id: ${id} has been added`, 'success'));
+        res.status(201).json(Message('Consult added', `Consult with id: ${id} has been added`, 'success'));
     }
     catch(err){
-        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'))
+        res.status(400).json(Message('An error has ocurred', `${err}`, 'error'))
     }
 });
 
@@ -39,7 +39,7 @@ routes.get('/consults/:id', (req,res)=>{
     firebaseHelper.firestore
         .getDocument(db, collection, req.params.id)
         .then(doc => res.status(200).json(Consult(doc.id, doc)))
-        .catch(err => res.status(400).json(main.Message('An error has ocured',`${err}`, 'error')));
+        .catch(err => res.status(400).json(Message('An error has ocured',`${err}`, 'error')));
 });
 
 routes.put('/consults/:id', async(req, res) => {
@@ -55,10 +55,10 @@ routes.put('/consults/:id', async(req, res) => {
             status: req.body["status"]===undefined?null:req.body["status"]
         };      
         await firebaseHelper.firestore.updateDocument(db, collection, id, consult);
-        res.status(200).json(main.Message('Consult updated', `Consult with id ${id} has been updated`, 'success'));
+        res.status(200).json(Message('Consult updated', `Consult with id ${id} has been updated`, 'success'));
     }
     catch(err){
-        res.status(400).json(main.Message('An error has ocured',`${err}`, 'error'));
+        res.status(400).json(Message('An error has ocured',`${err}`, 'error'));
     }
 });
 
@@ -69,7 +69,7 @@ routes.delete('/consults/:id', async (request, response) => {
         response.status(200).send(`Consult document with id ${id} was deleted`);
     }
     catch(err){
-        response.status(400).json(main.Message('An error has ocured',`${err}`, 'error'));
+        response.status(400).json(Message('An error has ocured',`${err}`, 'error'));
     }
 });
 
@@ -82,7 +82,7 @@ routes.get('/consults', (req, res) =>{
 routes.get('/clients/:id/consults', (req, res)=>{
     db.collection(collection).where('idclient', '==', req.params.id).get()
     .then(snapshot=>res.status(200).json(snapshot.docs.map(doc=>console.log(doc))))
-    .catch(err=> res.status(400).json(main.Message('An error has ocured',`${err}`, 'error')))
+    .catch(err=> res.status(400).json(Message('An error has ocured',`${err}`, 'error')))
 })
 
 export { routes };
