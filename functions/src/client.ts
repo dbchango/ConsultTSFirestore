@@ -1,40 +1,13 @@
 import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
-
+import { Client } from './models';
 
 const routes = Router();
 const db = main.db;
 const collection = "clients";
 
-interface Client {
-    idclient?: string,
-    ci: string,
-    phone: string,
-    name: string,
-    lastname: string,
-    borndate: Date, 
-    direction: string,
-    gender: string
-};
 
-////------------------------------------------------------------------------------------------------------////
-///---------------------------------------------Methods---------------------------------------------------////
-//--------------------------------------------------------------------------------------------------------////
-
-function getClient(id: string, data: any){
-    let object: Client = {
-        idclient: id,
-        ci: data.ci,
-        phone: data.phone,
-        name: data.name,
-        lastname: data.lastname,
-        borndate: data.borndate,
-        direction: data.direction,
-        gender: data.gender,
-    }
-    return object
-}
 //--------------------------------------------------------------------------------------------------------////
 //------------------------------------------------Clients CRUD`s------------------------------------------////
 //--------------------------------------------------------------------------------------------------------////
@@ -63,7 +36,7 @@ routes.get('/clients/:id', async(req, res)=>{
         await db.collection(collection).doc(varId).get()
         .then(
             doc=>{
-                res.status(200).json(getClient(doc.id, doc.data()));
+                res.status(200).json(Client(doc.data(), doc.id ));
             }
         ).catch(err => res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));
         /*
@@ -108,7 +81,7 @@ routes.delete('/clients/:id', async(req, res)=>{
 routes.get('/clients', (req, res)=>{
     db.collection(collection).get().then(
         snapshot=>{
-        res.status(200).json(snapshot.docs.map(doc=>getClient(doc.id, doc.data())));
+        res.status(200).json(snapshot.docs.map(doc=>Client(doc.data(), doc.id)));
     }).catch(err=>res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));
 });
 

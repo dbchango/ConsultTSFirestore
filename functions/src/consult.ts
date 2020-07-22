@@ -1,40 +1,11 @@
 import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
+import { Pet, Consult, Client } from './models';
 
 const routes = Router();
 const db = main.db;
 const collection = "consults";
-
-interface Consult {
-    idconsult?: string;
-    date: String,
-    observation: string,
-    price: number,
-    responsable: string,
-    status: number, 
-    idpet: string,
-    idclient: String
-}
-
-////------------------------------------------------------------------------------------------------------////
-///---------------------------------------------Methods---------------------------------------------------////
-//--------------------------------------------------------------------------------------------------------////
-
-function getConsult(id: string, data: any){
-    let object : Consult = {
-        idconsult: id,
-        date: data.date,
-        observation: data.observation,
-        price: data.price,
-        responsable: data.responsable,
-        status: data.status,
-        idpet: data.idpet,
-        idclient: data.idclient
-    }
-    return object;
-}
-
 
 //--------------------------------------------------------------------------------------------------------////
 //-----------------------------------------------Consults CRUD`s------------------------------------------////
@@ -42,7 +13,6 @@ function getConsult(id: string, data: any){
 
 routes.post('/consults', async (req, res) => {           
     try{            
-        
         const newConsult : Consult = {
             date: new Date().toDateString(),
             observation: req.body['observation'],
@@ -52,9 +22,13 @@ routes.post('/consults', async (req, res) => {
             responsable: req.body['responsable'],
             status: req.body["status"]
         };      
-        const consAdded = await firebaseHelper.firestore
-                                .createNewDocument(db, collection, newConsult);
-        res.status(201).json(main.Message('Consult added', `Consult with id: ${consAdded.id} has been added`, 'success'));
+        const pet = await db.collection("pets").doc(req.body['idpet']).get();
+        newConsult.pet = Pet(pet.id, pet .data())
+        const client = await db.collection("clients").doc(req.body['idclient']).get();
+        newConsult.client = Client(client.data(), client.id);
+        const id = (await db.collection(collection).add(newConsult)).id;
+        console.log(id);
+        res.status(201).json(main.Message('Consult added', `Consult with id: ${id} has been added`, 'success'));
     }
     catch(err){
         res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'))
@@ -64,7 +38,7 @@ routes.post('/consults', async (req, res) => {
 routes.get('/consults/:id', (req,res)=>{    
     firebaseHelper.firestore
         .getDocument(db, collection, req.params.id)
-        .then(doc => res.status(200).json(getConsult(doc.id, doc)))
+        .then(doc => res.status(200).json(Consult(doc.id, doc)))
         .catch(err => res.status(400).json(main.Message('An error has ocured',`${err}`, 'error')));
 });
 
@@ -100,15 +74,16 @@ routes.delete('/consults/:id', async (request, response) => {
 });
 
 routes.get('/consults', (req, res) =>{     
-    db.collection(collection).get()
-    .then(
-        snapshot => {
-            res.status(200).json(snapshot.docs.map(doc=>getConsult(doc.id, doc.data())));
-        }
-    ).catch(err=>{
-        res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error'))
-    });
+    firebaseHelper.firestore.backup(db, collection)
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(400).send(`An error has ocurred ${err}`));
 });
+
+routes.get('/clients/:id/consults', (req, res)=>{
+    db.collection(collection).where('idclient', '==', req.params.id).get()
+    .then(snapshot=>res.status(200).json(snapshot.docs.map(doc=>console.log(doc))))
+    .catch(err=> res.status(400).json(main.Message('An error has ocured',`${err}`, 'error')))
+})
 
 export { routes };
 

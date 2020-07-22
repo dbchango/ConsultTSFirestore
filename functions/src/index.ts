@@ -20,9 +20,8 @@ main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({extended: false}));
 main.use('/api', require('./pet').routes);
 main.use('/api', require('./client').routes);
-//main.use('/api', require('./pettype').routes);
 main.use('/api', require('./consult').routes);
-//main.use('/api', require('./vaccine').routes);
+main.use('/api', require('./vaccine').routes);
 
 export const api = functions.https.onRequest(main);
 export { db };
