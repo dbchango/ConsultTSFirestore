@@ -77,5 +77,13 @@ routes.get('/pets', (req, res) =>{
 });
 
 
+routes.get('/clients/:id/pets', (req, res)=>{
+    db.collection(collection).where('idclient','==', req.params.id).get()
+    .then(snapshot=>{
+        res.status(200).json(snapshot.docs.map(doc=>Pet(doc.id, doc.data())))
+    })
+    .catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')))
+})
+
 export { routes };
 

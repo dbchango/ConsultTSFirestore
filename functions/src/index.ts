@@ -6,10 +6,7 @@ import * as cors from 'cors';
 
 //=========================CONFIG===========================//
 
-admin.initializeApp({
-  credential: admin.credential.cert(require("../../serviceAccountKey.json")),
-  databaseURL: "https://consultoriovet-eb010.firebaseio.com"
-});
+admin.initializeApp(functions.config().firebase);
 
 const db = admin.firestore();
 db.settings({ignoreUndefinedProperties : true});
@@ -25,17 +22,3 @@ main.use('/api', require('./vaccine').routes);
 
 export const api = functions.https.onRequest(main);
 export { db };
-export interface Message {
-    title: string,
-    text: string,
-    icon: string
-  };
-  
-  export function Message(title: string, text: string, icon: string){
-    let message :  Message = {
-      title: title,
-      text: text,
-      icon: icon
-    }
-    return message
-  }

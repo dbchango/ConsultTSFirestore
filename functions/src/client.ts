@@ -85,4 +85,20 @@ routes.get('/clients', (req, res)=>{
     }).catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
 
+
+routes.get('/clients/:limit/:last', (req,res)=>{
+    var last:string = req.params.last;
+    var limit:number = parseInt(req.params.limit);
+    db.collection(collection).orderBy('lastname')
+    .startAt(last)
+    .limit(limit)
+    .get()
+    .then(snapshot=>{
+        res.status(200).json(snapshot.docs.map(doc=>Client(doc.data(), doc.id)));
+    }
+    ).catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')))
+})
+
+
+
 export { routes };

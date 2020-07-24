@@ -58,6 +58,12 @@ export function Consult(id: string, data: any){
     return object;
 }
 
+export function setStatus(status:number){
+    if(status===1){
+        return 
+    }
+}
+
 ///---------------------------------------------Pet---------------------------------------------------////
 
 export interface Pet {
@@ -107,3 +113,18 @@ export function Vaccine(id: string, data: any){
     }
     return object
 }
+///---------------------------------------------Message---------------------------------------------------////
+export interface Message {
+    title: string,
+    text: string,
+    icon: string
+  };
+  
+export function Message(title: string, text: string, icon: string){
+    let message :  Message = {
+      title: title,
+      text: text,
+      icon: icon
+    }
+    return message
+  }
