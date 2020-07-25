@@ -62,28 +62,40 @@ routes.put('/consults/:id', async(req, res) => {
     }
 });
 
-routes.delete('/consults/:id', async (request, response) => {
+routes.delete('/consults/:id', async (req, res) => {
     try{        
-        let id = request.params.id;
+        let id = req.params.id;
         await firebaseHelper.firestore.deleteDocument(db, collection, id);
-        response.status(200).send(`Consult document with id ${id} was deleted`);
+        res.status(200).send(`Consult document with id ${id} was deleted`);
     }
     catch(err){
-        response.status(400).json(Message('An error has ocured',`${err}`, 'error'));
+        res.status(400).json(Message('An error has ocured',`${err}`, 'error'));
     }
 });
 
 routes.get('/consults', (req, res) =>{     
-    firebaseHelper.firestore.backup(db, collection)
-        .then(result => res.status(200).send(result))
-        .catch(err => res.status(400).send(`An error has ocurred ${err}`));
+ 
+    db.collection(collection).get()
+    .then(snapshot=>{
+        res.status(200).json(snapshot.docs.map(doc=>Consult(doc.id, doc.data())));
+    })
+    .catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
 
+
 routes.get('/clients/:id/consults', (req, res)=>{
-    db.collection(collection).where('idclient', '==', req.params.id).get()
-    .then(snapshot=>res.status(200).json(snapshot.docs.map(doc=>console.log(doc))))
-    .catch(err=> res.status(400).json(Message('An error has ocured',`${err}`, 'error')))
-})
+    let id = req.params.id;
+    console.log(id);
+
+    db.collection(collection).where('idclient','==', id).get()
+    .then(snapshot=>{
+        res.status(200).json(snapshot.docs.map(doc=>Consult(doc.id, doc.data())))
+    }).catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')))
+}
+
+)
+
+
 
 export { routes };
 

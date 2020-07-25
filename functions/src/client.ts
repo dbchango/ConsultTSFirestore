@@ -86,7 +86,7 @@ routes.get('/clients', (req, res)=>{
 });
 
 
-routes.get('/clients/:limit/:last', (req,res)=>{
+routes.get('/clients/interval/:limit/:last', (req,res)=>{
     var last:string = req.params.last;
     var limit:number = parseInt(req.params.limit);
     db.collection(collection).orderBy('lastname')
