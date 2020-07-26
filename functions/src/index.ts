@@ -7,6 +7,12 @@ import * as cors from 'cors';
 //=========================CONFIG===========================//
 
 admin.initializeApp(functions.config().firebase);
+/*
+admin.initializeApp({
+    credential: admin.credential.cert(require("../../serviceAccountKey.json")),
+    databaseURL: "https://consultoriovet-eb010.firebaseio.com"
+});*/
+
 
 const db = admin.firestore();
 db.settings({ignoreUndefinedProperties : true});
