@@ -7,8 +7,6 @@ const routes = Router();
 const db = main.db;
 const collection = "pets";
 
-
-
 //--------------------------------------------------------------------------------------------------------////
 //------------------------------------------------Pets CRUD`s --------------------------------------------////
 //--------------------------------------------------------------------------------------------------------////
@@ -75,7 +73,6 @@ routes.get('/pets', (req, res) =>{
     })
     .catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
-
 
 routes.get('/clients/:id/pets', (req, res)=>{
     db.collection(collection).where('idclient','==', req.params.id).get()

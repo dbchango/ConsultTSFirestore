@@ -7,7 +7,6 @@ const routes = Router();
 const db = main.db;
 const collection = "clients";
 
-
 //--------------------------------------------------------------------------------------------------------////
 //------------------------------------------------Clients CRUD`s------------------------------------------////
 //--------------------------------------------------------------------------------------------------------////
@@ -39,10 +38,7 @@ routes.get('/clients/:id', async(req, res)=>{
                 res.status(200).json(Client(doc.data(), doc.id ));
             }
         ).catch(err => res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
-        /*
-        await firebaseHelper.firestore.getDocument(db, collection, varId)
-        .then(doc =>  res.status(200).json(getClient(req.params.id, doc))
-        ).catch(err => res.status(400).json(main.Message('An error has ocurred', `${err}`, 'error')));*/
+
 
 });
 
@@ -85,7 +81,7 @@ routes.get('/clients', (req, res)=>{
     }).catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
 
-
+//list codes by interval
 routes.get('/clients/interval/:limit/:last', (req,res)=>{
     var last:number = parseInt(req.params.last);
     var limit:number = parseInt(req.params.limit);
@@ -95,6 +91,6 @@ routes.get('/clients/interval/:limit/:last', (req,res)=>{
         res.status(200).json(snapshot.docs.map(doc=>Client(doc.data(), doc.id)));
     }
     ).catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')))
-})
+});
 
 export { routes };
