@@ -1,7 +1,8 @@
 import * as main from './index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
-import { Pet, Message } from './models';
+import { Pet } from '../models/pet';
+import { Message } from '../models/message';
 
 const routes = Router();
 const db = main.db;
@@ -75,7 +76,8 @@ routes.get('/pets', (req, res) =>{
 });
 
 routes.get('/clients/:id/pets', (req, res)=>{
-    db.collection(collection).where('idclient','==', req.params.id).get()
+    db.collection(collection).where('idclient','==', req.params.id)
+    .get()
     .then(snapshot=>{
         res.status(200).json(snapshot.docs.map(doc=>Pet(doc.id, doc.data())))
     })

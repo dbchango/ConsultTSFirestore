@@ -23,7 +23,7 @@ routes.post('/consults', async (req, res) => {
             status: req.body["status"]
         };      
         const pet = await db.collection("pets").doc(req.body['idpet']).get();
-        newConsult.pet = Pet(pet.id, pet .data())
+        newConsult.pet = Pet(pet.id, pet.data())
         const client = await db.collection("clients").doc(req.body['idclient']).get();
         newConsult.client = Client(client.data(), client.id);
         const id = (await db.collection(collection).add(newConsult)).id;
