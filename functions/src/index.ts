@@ -8,10 +8,13 @@ import * as cors from 'cors';
 
 admin.initializeApp(functions.config().firebase);
 /*
+var serviceAccount = require("../../serviceAccountKey.json");
+
 admin.initializeApp({
-    credential: admin.credential.cert(require("../../serviceAccountKey.json")),
-    databaseURL: "https://consultoriovet-eb010.firebaseio.com"
-});*/
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://consultoriovet-eb010.firebaseio.com"
+});
+*/
 
 admin.initializeApp(functions.config().firebase);
 
@@ -22,10 +25,12 @@ const main = express();
 main.use(cors());
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({extended: false}));
-main.use('/api', require('./pet').routes);
-main.use('/api', require('./client').routes);
-main.use('/api', require('./consult').routes);
-main.use('/api', require('./vaccine').routes);
+main.use('/api', require('./routes//pet').routes);
+main.use('/api', require('./routes/client').routes);
+main.use('/api', require('./routes/consult').routes);
+main.use('/api', require('./routes/vaccine').routes);
+main.use('/api', require('./routes/veterinary').routes);
+main.use('/api', require('./routes/auth').routes);
 
 export const api = functions.https.onRequest(main);
 export { db };
