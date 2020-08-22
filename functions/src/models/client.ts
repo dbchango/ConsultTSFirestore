@@ -9,7 +9,7 @@ export interface Client {
     gender: string
 };
 
-export function Client(data: any, id: string){
+export function Client(data: any, id?: string){
     const { ci, phone, name, lastname, borndate, direction, gender } = data
     let object: Client = {
         idclient: id,

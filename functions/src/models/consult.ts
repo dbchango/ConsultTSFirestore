@@ -2,7 +2,6 @@ import { Client } from "./client";
 import { Pet } from "./pet";
 import { Veterinary } from "./veterinary";
 
-
 export interface Consult {
     idconsult?: string;
     date: string,
@@ -17,18 +16,19 @@ export interface Consult {
     veterinary?: Veterinary
 }
 
-export function Consult(id: string, data: any){
+export function Consult(data: any, id?: string){
+    const { observation, price, responsable, status, idpet, idclient, pet, client } = data;
     let object : Consult = {
         idconsult: id,
-        date: data.date,
-        observation: data.observation,
-        price: data.price,
-        responsable: data.responsable,
-        status: data.status,
-        idpet: data.idpet,
-        idclient: data.idclient,
-        pet: Pet(data.pet.id, data.pet),
-        client: Client( data.client, data.client.id)
+        date: new Date().toDateString(),
+        observation: observation,
+        price: price,
+        responsable: responsable,
+        status: status,
+        idpet: idpet,
+        idclient: idclient,
+        pet: Pet(pet, pet.id),
+        client: Client( client, client.id)
     }
     return object;
 }

@@ -1,7 +1,9 @@
-import * as main from './index';
+import * as main from '../index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
-import { Client, Message } from './models';
+import { Client } from '../models/client';
+import { Message } from '../models/message';
+
 
 const routes = Router();
 const db = main.db;
@@ -31,13 +33,6 @@ routes.post('/clients', async(req, res)=>{
 
 //Search a doc by id
 routes.get('/clients/:id', async(req, res)=>{
-/*
-    await db.collection(collection).startAt(req.params.id).get().then(
-        snapshot=>{
-            res.status(200).json(snapshot.docs.map(doc=>Client(doc.data(), doc.id)));
-        }
-    ).catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')))*/
-    
     let varId = req.params.id;
         await db.collection(collection).doc(varId).get()
         .then(

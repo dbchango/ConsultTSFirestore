@@ -1,4 +1,4 @@
-import * as main from './index';
+import * as main from '../index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
 import { Pet } from '../models/pet';
@@ -70,7 +70,7 @@ routes.delete('/pets/:id', async (request, response) => {
 routes.get('/pets', (req, res) =>{     
     db.collection(collection).get()
     .then(snapshot=>{
-        res.status(200).json(snapshot.docs.map(doc=>Pet(doc.id, doc.data())));
+        res.status(200).json(snapshot.docs.map(doc=>Pet(doc.data(), doc.id)));
     })
     .catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
@@ -79,7 +79,7 @@ routes.get('/clients/:id/pets', (req, res)=>{
     db.collection(collection).where('idclient','==', req.params.id)
     .get()
     .then(snapshot=>{
-        res.status(200).json(snapshot.docs.map(doc=>Pet(doc.id, doc.data())))
+        res.status(200).json(snapshot.docs.map(doc=>Pet(doc.data(), doc.id)))
     })
     .catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')))
 })

@@ -1,7 +1,11 @@
-import * as main from './index';
+import * as main from '../index';
 import * as firebaseHelper from 'firebase-functions-helper';
 import * as Router from 'express';
-import { Pet, Consult, Client, Message } from './models';
+import { Consult } from '../models/consult';
+import { Client } from '../models/client';
+import { Pet } from '../models/pet';
+import { Message } from '../models/message';
+
 
 const routes = Router();
 const db = main.db;
@@ -13,17 +17,9 @@ const collection = "consults";
 
 routes.post('/consults', async (req, res) => {           
     try{            
-        const newConsult : Consult = {
-            date: new Date().toDateString(),
-            observation: req.body['observation'],
-            price: req.body['price'],
-            idpet: req.body['idpet'],
-            idclient: req.body['idclient'],
-            responsable: req.body['responsable'],
-            status: req.body["status"]
-        };      
+        const newConsult = Consult(req.body);
         const pet = await db.collection("pets").doc(req.body['idpet']).get();
-        newConsult.pet = Pet(pet.id, pet.data())
+        newConsult.pet = Pet(pet.data(), pet.id)
         const client = await db.collection("clients").doc(req.body['idclient']).get();
         newConsult.client = Client(client.data(), client.id);
         const id = (await db.collection(collection).add(newConsult)).id;
@@ -45,15 +41,7 @@ routes.get('/consults/:id', (req,res)=>{
 routes.put('/consults/:id', async(req, res) => {
     try{       
         var id = req.params.id;
-        const consult : Consult = {
-            date: new Date().toDateString(),
-            observation: req.body['observation']===undefined?null:req.body['observation'],
-            price: req.body['price']===undefined?null:req.body['price'],
-            idpet: req.body['idpet']===undefined?null:req.body['idpet'],
-            idclient: req.body['idclient']===undefined?null:req.body['idclient'],
-            responsable: req.body['responsable']===undefined?null:req.body['responsable'],
-            status: req.body["status"]===undefined?null:req.body["status"]
-        };      
+        const consult = Consult(req.body, id);  
         await firebaseHelper.firestore.updateDocument(db, collection, id, consult);
         res.status(200).json(Message('Consult updated', `Consult with id ${id} has been updated`, 'success'));
     }
@@ -77,7 +65,7 @@ routes.get('/consults', (req, res) =>{
  
     db.collection(collection).get()
     .then(snapshot=>{
-        res.status(200).json(snapshot.docs.map(doc=>Consult(doc.id, doc.data())));
+        res.status(200).json(snapshot.docs.map(doc=>Consult(doc.data(), doc.id)));
     })
     .catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
 });
@@ -86,10 +74,9 @@ routes.get('/consults', (req, res) =>{
 routes.get('/clients/:id/consults', (req, res)=>{
     let id = req.params.id;
     console.log(id);
-
     db.collection(collection).where('idclient','==', id).get()
     .then(snapshot=>{
-        res.status(200).json(snapshot.docs.map(doc=>Consult(doc.id, doc.data())))
+        res.status(200).json(snapshot.docs.map(doc=>Consult(doc.data(), doc.id)))
     }).catch(err=>res.status(400).json(Message('An error has ocurred', `${err}`, 'error')))
 }
 
