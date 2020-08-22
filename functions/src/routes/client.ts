@@ -14,15 +14,7 @@ const collection = "clients";
 //--------------------------------------------------------------------------------------------------------////
 routes.post('/clients', async(req, res)=>{
     try{
-        const newClient : Client ={
-            ci: req.body["ci"],
-            phone: req.body["phone"],
-            borndate: req.body["borndate"],
-            name: req.body["name"],
-            lastname: req.body["lastname"],
-            direction: req.body["direction"],
-            gender: req.body["gender"]
-        };     
+        const newClient = Client(req.body); 
         const clientAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newClient);
         res.status(201).json(Message('Client added', `Client was added with id: ${clientAdded.id}`, 'success'));
@@ -48,15 +40,7 @@ routes.get('/clients/:id', async(req, res)=>{
 routes.put('/clients/:id', async(req, res)=>{
     try{
         var id = req.params.id;
-        const newClient : Client ={
-            ci: req.body["ci"] === undefined ? null : req.body["ci"],
-            phone: req.body["phone"]=== undefined ? null :req.body["phone"],
-            borndate: req.body["borndate"] === undefined ? null :req.body["borndate"], 
-            name: req.body["name"] === undefined ? null :req.body["name"],
-            lastname: req.body["lastname"]=== undefined ? null :req.body["lastname"],
-            direction: req.body["direction"] === undefined ? null :req.body["direction"],
-            gender: req.body["gender"]=== undefined ? null:req.body["gender"]
-        };      
+        const newClient = Client(req.body); 
         await firebaseHelper.firestore.updateDocument(db, collection, id, newClient);
         res.status(201).json(Message('Client updated', `Client with id: ${id} has been updated`, 'success'));
     }catch(err){

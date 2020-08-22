@@ -13,14 +13,7 @@ const collection = "pets";
 //--------------------------------------------------------------------------------------------------------////
 routes.post('/pets', async (req, res) => {           
     try{      
-        const newPet : Pet = {
-            name: req.body['name'],
-            color: req.body['color'],
-            age: req.body['age'],
-            idclient: req.body['idclient'],
-            type: req.body['type'],
-            sex: req.body["sex"],
-        };      
+        const newPet = Pet(req.body);
         const petAdded = await firebaseHelper.firestore
                                 .createNewDocument(db, collection, newPet);
         res.status(201).json(Message('Pet added', `Pet with id: ${petAdded.id} was added`, 'error'));
@@ -40,14 +33,7 @@ routes.get('/pets/:id', (req,res)=>{
 routes.put('/pets/:id', async(req, res) => {
     try{       
         var id = req.params.id;
-        const pet : Pet = {
-            name: req.body['name']===undefined?null:req.body['name'],
-            color: req.body['color']===undefined?null:req.body['color'],
-            age: req.body['age']===undefined?null:req.body['age'],
-            idclient: req.body['idclient']===undefined?null:req.body['idclient'],
-            type: req.body['type']===undefined?null:req.body['type'],
-            sex: req.body["sex"]===undefined?null:req.body["sex"]
-        }; 
+        const pet = Pet(req.body, id);
         await firebaseHelper.firestore.updateDocument(db, collection, id, pet);
         res.status(200).json(Message('Pet was updated', `Pet with id: ${id} was updated`, 'success'));
     }

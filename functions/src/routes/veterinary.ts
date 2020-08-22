@@ -20,18 +20,19 @@ routes.post('/veterinaries', async(req, res)=>{
     }
 });
 
-//-----------Leer----------//
 routes.get('/veterinaries/:id', async(req, res)=>{
-    firebaseHelper.firestore
-        .getDocument(db, collection, req.params.id)
-        .then(doc => res.status(200).json(Veterinary(doc, doc.id)))
-        .catch(err => res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
+    let id = req.params.id;
+    await db.collection(collection).doc(id).get()
+    .then(doc=>{
+        res.status(200).json(Veterinary(doc.data(), doc.id));
+    })
+    .catch(err=> res.status(400).json(Message('An error has ocurred', `${err}`, 'error')));
+    
 });
 
-//------Actualizar--------//
 routes.put('/veterinaries/:id', async(req, res) => {
     try{
-        const newVeterinarie = Veterinary(req.body, req.params.id);
+        const newVeterinarie = Veterinary(req.body);
         await firebaseHelper.firestore.updateDocument(db, collection, req.params.id, newVeterinarie);
         res.status(400).json(Message('Veterinary has been updated', `Veterinary with id: ${req.params.id} has been updated`, 'success'))
     }catch(err){
@@ -39,7 +40,6 @@ routes.put('/veterinaries/:id', async(req, res) => {
     }
 });
 
-//------Eliminar------//
 routes.delete('/veterinaries/:id', async(req, res) => {
     try{
         await db.collection(collection).doc(req.params.id).delete();
@@ -49,7 +49,7 @@ routes.delete('/veterinaries/:id', async(req, res) => {
     }
 
 });
-//------consulta Lista de Vacunas-------//
+
 routes.get('/veterinaries', (req, res) =>{     
     db.collection(collection).get()
     .then(snapshot=>{

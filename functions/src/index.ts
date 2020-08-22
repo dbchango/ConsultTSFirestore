@@ -6,16 +6,15 @@ import * as cors from 'cors';
 
 //=========================CONFIG===========================//
 
-//admin.initializeApp(functions.config().firebase);
-
-
+admin.initializeApp(functions.config().firebase);
+/*
 var serviceAccount = require("../../serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://consultoriovet-eb010.firebaseio.com"
 });
-
+*/
 
 
 const db = admin.firestore();
@@ -30,6 +29,7 @@ main.use('/api', require('./routes/client').routes);
 main.use('/api', require('./routes/consult').routes);
 main.use('/api', require('./routes/vaccine').routes);
 main.use('/api', require('./routes/veterinary').routes);
+main.use('/api', require('./routes/auth').routes);
 
 export const api = functions.https.onRequest(main);
 export { db };
