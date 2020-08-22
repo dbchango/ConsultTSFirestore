@@ -6,6 +6,4 @@
 typings/
 
 node_modules/
-vaccine.ts
-pettypes.ts
 serviceAccountKey.json
