@@ -1,12 +1,9 @@
-import * as main from '../index';
-import * as firebaseHelper from 'firebase-functions-helper';
-import * as Router from 'express';
+import { db } from '../index';
+import { Request, Response } from 'express';
 import { Vaccine } from '../models/vaccine';
-import { Pet } from '../models/pet';
 import { Message } from '../models/message';
 
-const routes = Router();
-const db = main.db;
+
 const collection = "vaccines";
 
 //--------------------------------------------------------------------------------------------------------////
@@ -14,20 +11,62 @@ const collection = "vaccines";
 //--------------------------------------------------------------------------------------------------------////
 
 //------Crear Vacunas------// 
-routes.post('/vaccines', async(req, res)=>{
+export async function createVaccine(req: Request, res: Response){
     try{
         const newVaccine = Vaccine(req.body);
-        const pet = await db.collection("pets").doc(req.body['idpet']).get();
-        newVaccine.pet = Pet(pet.data(), pet.id);
-        console.log(newVaccine.pet);
-        const id = (await db.collection(collection).add(newVaccine)).id;
-        res.status(201).json(Message('Vaccine added', `Vaccine was added with id: ${id}`, 'success'));
-        console.log(req.body['idpet'])
+        let idVaccine = (await db.collection(collection).add(newVaccine)).id
+        return res.status(201).json(Message('Vaccine added', `Vaccine was added with id: ${idVaccine}`, 'success'))
     }catch(err){
-        res.status(400).json(Message('An error has ocurred', `${err}`, 'error'));
+        return handleError(res, err);
     }
-});
 
+}
+
+export async function retrieveVaccine(req: Request, res: Response){
+    try{    
+        let id = req.params.id;
+        const doc = await db.collection(collection).doc(id).get();
+        if(!doc){
+            return res.status(404).json(Message('Vaccine does not found', `Vaccine with id: ${id} has not found`, 'warning'));
+        }
+        return res.status(200).json(Vaccine(doc.data(), doc.id))
+    }catch(err){
+        return handleError(res, err);
+    }
+}
+
+export async function updateVaccine(req: Request, res: Response){
+    try{
+        let id = req.params.id;
+        const newVaccine = Vaccine(req.body);
+        db.collection(collection).doc(id).set(newVaccine, {merge:true});
+        return res.status(201).json(Message('Vaccine was updeted', `Vaccine with id: ${req.params.id} was updated`, 'success'));
+    }catch(err){
+        return handleError(res, err)
+    }
+}
+
+export async function deleteVaccine(req:Request, res:Response){
+    try{
+        let id = req.params.id;
+        await db.collection(collection).doc(id).delete();
+        res.status(201).json(Message('Vaccine deleted', `Vaccine with ${req.params.id} was deleted`, 'success'))
+    }catch(err){
+        return handleError(res, err);
+    }
+}
+
+export async function listVaccine(req: Request, res:Response){
+    try{
+        const snapshot = await db.collection(collection).get();
+        res.status(200).json(snapshot.docs.map(doc => Vaccine(doc.data(), doc.id)) )
+    }catch(err){
+        return handleError(res, err);
+    }
+}
+
+
+/*
 //-----------Leer----------//
 routes.get('/vaccines/:id', async(req, res)=>{
     firebaseHelper.firestore
@@ -73,4 +112,10 @@ routes.get('/pets/:id/vaccines', (req, res)=>{
 });
 
 export { routes };
+*/
+
+function handleError(res: Response, err:any){
+    res.status(500).send({message: `${err.code} - ${err.message}`})
+}
+
 

@@ -7,28 +7,29 @@ export interface Consult {
     date: string,
     observation: string,
     price: number,
-    responsable: string,
     status: number, 
     idpet: string,
-    idclient: string
+    idclient: string,
+    idveterinary: string,
     pet?: Pet,
     client?: Client,
     veterinary?: Veterinary
 }
 
 export function Consult(data: any, id?: string){
-    const { observation, price, responsable, status, idpet, idclient, pet, client } = data;
+    const { observation, price, status, idpet, idclient, idveterinary, pet, client, veterinary } = data;
     let object : Consult = {
         idconsult: id,
         date: new Date().toDateString(),
         observation: observation,
         price: price,
-        responsable: responsable,
         status: status,
         idpet: idpet,
         idclient: idclient,
-        pet: Pet(pet, pet.id),
-        client: Client( client, client.id)
+        idveterinary: idveterinary,
+        pet: pet,
+        client: client, 
+        veterinary: veterinary
     }
     return object;
 }
