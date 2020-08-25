@@ -55,7 +55,7 @@ export async function deleteClient(req:Request, res: Response){
     }
 };
 
-//List collection`s docs
+//List collection`s docs/*
 export async function listClients(req:Request, res: Response){
     try{
         var last:number = parseInt(req.params.last);
@@ -67,6 +67,27 @@ export async function listClients(req:Request, res: Response){
     }
 };
 
+export async function countClient(req:Request, res: Response){
+    try{
+        const snapshot = await db.collection(collection).get();
+        return res.status(200).json({numberDocs: snapshot.size});
+    }catch(err){
+        return handleError(res, err);
+    }
+};
+
+export async function listClient(req:Request, res: Response){
+    try{
+        let page = parseInt(req.params.page);
+        let limit = parseInt(req.params.limit);
+        let avoid = page == 1 ? 0 : (page - 1) * limit;
+        let snapshot = await db.collection(collection).orderBy('lastname').offset(avoid).limit(limit).get();
+        return res.status(200).json(snapshot.docs.map(doc => Client(doc.data(), doc.id)));
+    }catch(err){
+        return handleError(res, err);
+    }
+    
+}
 //list codes by interval
 function handleError(res: Response, err:any){
     res.status(500).send({message: `${err.code} - ${err.message}`})

@@ -97,6 +97,16 @@ export async function countPet(req:Request, res: Response){
     
 };
 
+export async function listClientPets(req:Request, res: Response){
+    try{
+        let id = req.params.id;
+        const snapshot = await db.collection(collection).where('idclient','==', id).get();
+        return res.status(200).json(snapshot.docs.map(doc=>Pet(doc.data(), doc.id)))
+    }catch(err){
+        return handleError(res, err)
+    }
+}
+
 function handleError(res: Response, err:any){
     res.status(500).send({message: `${err.code} - ${err.message}`})
 }

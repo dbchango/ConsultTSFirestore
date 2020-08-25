@@ -1,7 +1,7 @@
 import { Application } from 'express';
-import { createClient, retrieveClient, updateClient, deleteClient, listClients } from './controllers/client';
+import { createClient, retrieveClient, updateClient, deleteClient, listClients, countClient, listClient } from './controllers/client';
 import { createVaccine, retrieveVaccine, updateVaccine, deleteVaccine, listVaccine } from './controllers/vaccine';
-import { createPet, retrievePet, updatePet, deletePet, countPet, listPet } from './controllers/pet';
+import { createPet, retrievePet, updatePet, deletePet, countPet, listPet, listClientPets } from './controllers/pet';
 import { createVeterinary, retrieveVeterinary, updateVeterinary, deleteVeterinary, listVeterinary } from './controllers/veterinary';
 import { createConsult, retrieveConsult, updateConsult, deleteConsult, listConsult, listClientConsult } from './controllers/consult';
 
@@ -11,13 +11,16 @@ export function routesClient(app:Application){
     app.put('/api/clients/:id', updateClient);
     app.delete('/api/clients/:id', deleteClient);
     app.get('/api/clients/interval/:limit/:last', listClients);
-    app.get('/api/clients/:id/consults/:limit/:last', listClientConsult);
+    app.get('/api/count/clients', countClient);
+    app.get('/api/page/clients/:page/:limit', listClient);
+    app.get('/api/clients/:id/consults', listClientConsult);
 }
 
 export function routesConsults(app: Application){   
     app.post('/api/consults', createConsult);
     app.get('/api/consults/:id', retrieveConsult);
     app.put('/api/consults/:id', updateConsult);
+    app.delete('/api/consults/:id', deleteConsult);
     app.delete('/api/consults/:id', deleteConsult);
     app.get('/api/consults/interval/:limit/:last', listConsult);
 }
@@ -43,6 +46,7 @@ export function routesPet(app: Application){
     app.get('/api/pets/:id', retrievePet);
     app.put('/api/pets/:id', updatePet);
     app.delete('/api/pets/:id', deletePet);
+    app.get('/api/clients/:id/pets', listClientPets)
     app.get('/api/clients/pets/:id', countPet);
     app.get('/api/clients/:id/pets/page/:page/:limit', listPet);
 }

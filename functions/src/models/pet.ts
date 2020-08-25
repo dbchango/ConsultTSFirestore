@@ -1,5 +1,5 @@
 import { Client } from "../models/client";
-import { Vaccineref } from "./vaccineref";
+import { VaccineReference } from "./vaccinereference";
 
 export interface Pet {
     idpet?:string,
@@ -9,12 +9,12 @@ export interface Pet {
     idclient: string, 
     type: string,
     sex: string, 
-    vaccines: Array<Vaccineref>,
+    vaccines: Array<VaccineReference>,
     client?: Client
 };
 
 export function Pet(data: any, id?: string){
-    const { name, color, age, idclient, type, sex, client, vaccineref } = data;
+    const { name, color, age, idclient, type, sex, client, vaccines } = data;
     let object:Pet={
         idpet: id,
         name: name,
@@ -23,7 +23,7 @@ export function Pet(data: any, id?: string){
         idclient: idclient,
         type: type,
         sex: sex,
-        vaccines: vaccineref,
+        vaccines: vaccines,
         client: client
     }
     return object

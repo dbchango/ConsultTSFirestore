@@ -1,4 +1,4 @@
-export interface Vaccineref{
+export interface VaccineReference{
     idvaccine?:string,
     date: string,
     name: string, 
@@ -7,7 +7,7 @@ export interface Vaccineref{
 
 export function Vaccineref(data: any, id?: string ){
     const { date, name, description } = data
-    let object: Vaccineref={
+    let object: VaccineReference={
         idvaccine: id, 
         date: date,
         name: name,

@@ -90,9 +90,7 @@ export async function countConsult(req:Request, res: Response){
 export async function listClientConsult(req:Request, res: Response){ 
     try{
         let id = req.params.id;
-        var last:number = parseInt(req.params.last);
-        var limit:number = parseInt(req.params.limit);
-        let snapshot = await db.collection(collection).where('idclient','==', id).limit(limit).offset(last).get();   
+        let snapshot = await db.collection(collection).where('idclient','==', id).get();   
         return res.status(200).json(snapshot.docs.map(doc=>Consult(doc.data(), doc.id)));
     }catch(err){
         return handleError(res, err);

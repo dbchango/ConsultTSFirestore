@@ -7,15 +7,15 @@ import { routesClient, routesPet, routesVaccines, routesVeterineries, routesCons
 
 //=========================CONFIG===========================//
 
-//admin.initializeApp(functions.config().firebase);
-
+admin.initializeApp(functions.config().firebase);
+/*
 var serviceAccount = require("../../serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://consultoriovet-eb010.firebaseio.com"
 });
-
+*/
 const db = admin.firestore();
 db.settings({ignoreUndefinedProperties : true});
 
