@@ -1,9 +1,15 @@
 import { Application } from 'express';
 import { createClient, retrieveClient, updateClient, deleteClient, listClients, countClient, listClient } from './controllers/client';
 import { createVaccine, retrieveVaccine, updateVaccine, deleteVaccine, listVaccine } from './controllers/vaccine';
-import { createPet, retrievePet, updatePet, deletePet, countPet, listPet, listClientPets } from './controllers/pet';
+import { createPet, retrievePet, updatePet, deletePet, countPet, listPet, listClientPets, listPets } from './controllers/pet';
 import { createVeterinary, retrieveVeterinary, updateVeterinary, deleteVeterinary, listVeterinary } from './controllers/veterinary';
-import { createConsult, retrieveConsult, updateConsult, deleteConsult, listConsult, listClientConsult } from './controllers/consult';
+import { createConsult, retrieveConsult, updateConsult, deleteConsult, listConsult, listClientConsult, listPetConsult } from './controllers/consult';
+import { signup } from './controllers/auth';
+import { createMedicine, retrieveMedicine, updateMedicine, deleteMedicine, listMedicine } from './controllers/medicine';
+
+export function routeSignUp(app: Application){
+    app.post('/api/auth/signup', signup);
+}
 
 export function routesClient(app:Application){
     app.post('/api/clients', createClient);
@@ -20,7 +26,6 @@ export function routesConsults(app: Application){
     app.post('/api/consults', createConsult);
     app.get('/api/consults/:id', retrieveConsult);
     app.put('/api/consults/:id', updateConsult);
-    app.delete('/api/consults/:id', deleteConsult);
     app.delete('/api/consults/:id', deleteConsult);
     app.get('/api/consults/interval/:limit/:last', listConsult);
 }
@@ -49,4 +54,15 @@ export function routesPet(app: Application){
     app.get('/api/clients/:id/pets', listClientPets)
     app.get('/api/clients/pets/:id', countPet);
     app.get('/api/clients/:id/pets/page/:page/:limit', listPet);
+    app.get('/api/pets/:id/consults', listPetConsult);
+    app.get('/api/pets', listPets);
+}
+
+
+export function routesMedicines(app: Application){
+    app.post('/api/medicines', createMedicine);
+    app.get('/api/medicines/:id', retrieveMedicine);
+    app.put('/api/medicines/:id', updateMedicine);
+    app.delete('/api/medicines/:id', deleteMedicine);
+    app.get('/api/medicines', listMedicine)
 }

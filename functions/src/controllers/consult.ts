@@ -1,7 +1,7 @@
 import { db } from '../index'
 import {Request, Response } from 'express';
 import { Consult } from '../models/consult';
-import { Client } from '../models/client';
+
 import { Message } from '../models/message';
 import { Pet } from '../models/pet';
 import { Veterinary } from '../models/veterinary';
@@ -16,11 +16,9 @@ export async function createConsult(req:Request, res: Response){
     try{            
         const newConsult = Consult(req.body);
         const pet = await db.collection('pets').doc(req.body['idpet']).get();
-        newConsult.pet = Pet(pet.data(), pet.id);
-        const client = await db.collection('clients').doc(req.body['idclient']).get();
-        newConsult.client = Client(client.data(), client.id);
+        newConsult.pet = Pet(pet.data());
         const veterinary = await db.collection('veterinaries').doc(req.body['idveterinary']).get();
-        newConsult.veterinary = Veterinary(veterinary.data(), veterinary.id);
+        newConsult.veterinary = Veterinary(veterinary.data());
         console.log(newConsult);   
         const id = (await db.collection(collection).add(newConsult)).id
         return res.status(201).json(Message('Consult added', `Consult with id: ${id} has been added`, 'success'));
@@ -96,6 +94,17 @@ export async function listClientConsult(req:Request, res: Response){
         return handleError(res, err);
     }
 }
+
+export async function listPetConsult(req:Request, res: Response){ 
+    try{
+        let id = req.params.id;
+        let snapshot = await db.collection(collection).where('idpet','==', id).get();   
+        return res.status(200).json(snapshot.docs.map(doc=>Consult(doc.data(), doc.id)));
+    }catch(err){
+        return handleError(res, err);
+    }
+}
+
 
 
 function handleError(res: Response, err:any){

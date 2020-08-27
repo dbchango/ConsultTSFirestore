@@ -16,7 +16,7 @@ export async function createPet(req:Request, res: Response){
         const newPet = Pet(req.body);
         let idclient = req.body['idclient'];
         const client = await db.collection('clients').doc(idclient).get();
-        newPet.client = Client(client.data(), client.id);
+        newPet.client = Client(client.data());
         const id =  (await db.collection(collection).add(newPet)).id
         return  res.status(201).json(Message('Pet added', `Pet with id: ${id} was added`, 'success'));
     }
@@ -101,6 +101,15 @@ export async function listClientPets(req:Request, res: Response){
     try{
         let id = req.params.id;
         const snapshot = await db.collection(collection).where('idclient','==', id).get();
+        return res.status(200).json(snapshot.docs.map(doc=>Pet(doc.data(), doc.id)))
+    }catch(err){
+        return handleError(res, err)
+    }
+}
+
+export async function listPets(req:Request, res: Response){
+    try{
+        const snapshot = await db.collection(collection).get();
         return res.status(200).json(snapshot.docs.map(doc=>Pet(doc.data(), doc.id)))
     }catch(err){
         return handleError(res, err)

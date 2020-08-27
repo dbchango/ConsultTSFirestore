@@ -8,7 +8,7 @@ export interface Vaccine {
 export function Vaccine(data: any, id?: string ){
     const { name, description, brand } = data
     let object: Vaccine={
-        idvaccine: id, 
+        idvaccine: id,
         name: name,
         description: description,
         brand: brand

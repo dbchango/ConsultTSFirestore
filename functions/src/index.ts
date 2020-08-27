@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
-import { routesClient, routesPet, routesVaccines, routesVeterineries, routesConsults } from './router';
+import { routesClient, routesPet, routesVaccines, routesVeterineries, routesConsults, routeSignUp, routesMedicines } from './router';
 
 //=========================CONFIG===========================//
 
@@ -29,5 +29,7 @@ routesVaccines(server);
 routesPet(server);
 routesVeterineries(server);
 routesConsults(server);
+routeSignUp(server);
+routesMedicines(server);
 export const api = functions.https.onRequest(server);
 export { db };
