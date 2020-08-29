@@ -3,7 +3,7 @@ import { createClient, retrieveClient, updateClient, deleteClient, listClients, 
 import { createVaccine, retrieveVaccine, updateVaccine, deleteVaccine, listVaccine } from './controllers/vaccine';
 import { createPet, retrievePet, updatePet, deletePet, countPet, listPet, listClientPets, listPets } from './controllers/pet';
 import { createVeterinary, retrieveVeterinary, updateVeterinary, deleteVeterinary, listVeterinary } from './controllers/veterinary';
-import { createConsult, retrieveConsult, updateConsult, deleteConsult, listConsult, listClientConsult, listPetConsult } from './controllers/consult';
+import { createConsult, retrieveConsult, updateConsult, deleteConsult, listConsult, listClientConsult, listPetConsult, listAllConsult, countConsult } from './controllers/consult';
 import { signup } from './controllers/auth';
 import { createMedicine, retrieveMedicine, updateMedicine, deleteMedicine, listMedicine } from './controllers/medicine';
 
@@ -27,7 +27,9 @@ export function routesConsults(app: Application){
     app.get('/api/consults/:id', retrieveConsult);
     app.put('/api/consults/:id', updateConsult);
     app.delete('/api/consults/:id', deleteConsult);
-    app.get('/api/consults/interval/:limit/:last', listConsult);
+    app.get('/api/count/consults', countConsult);
+    app.get('/api/page/consults/:page/:limit', listConsult);
+    app.get('/api/consults', listAllConsult);
 }
 
 export function routesVaccines(app:Application){

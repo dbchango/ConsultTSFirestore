@@ -19,7 +19,6 @@ export async function createConsult(req:Request, res: Response){
         newConsult.pet = Pet(pet.data());
         const veterinary = await db.collection('veterinaries').doc(req.body['idveterinary']).get();
         newConsult.veterinary = Veterinary(veterinary.data());
-        console.log(newConsult);   
         const id = (await db.collection(collection).add(newConsult)).id
         return res.status(201).json(Message('Consult added', `Consult with id: ${id} has been added`, 'success'));
     }
@@ -43,8 +42,12 @@ export async function retrieveConsult(req:Request, res: Response){
 
 export async function updateConsult(req:Request, res: Response){
     var id = req.params.id;
+    console.log(req.body)
     try{       
-        const consult = Consult(req.body);  
+        const consult = Consult(req.body);
+        const veterinary = await db.collection('veterinaries').doc(req.body['idveterinary']).get();
+        consult.veterinary = Veterinary(veterinary.data());
+
         await db.collection(collection).doc(id).set(consult, {merge: true});
         return res.status(200).json(Message('Consult updated', `Consult with id ${id} has been updated`, 'success'));
     }
@@ -63,6 +66,17 @@ export async function deleteConsult(req:Request, res: Response){
         return handleError(res, err);
     }
 };
+
+export async function listAllConsult(req:Request, res: Response){ 
+    try{
+        let snapshot = await db.collection(collection).get();
+        return res.status(200).json(snapshot.docs.map(doc=>Consult(doc.data(), doc.id)));
+    }catch(err){
+        return handleError(res, err);
+    }
+};
+
+
 export async function listConsult(req:Request, res: Response){ 
     try{
         let page = parseInt(req.params.page);

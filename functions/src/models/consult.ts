@@ -13,11 +13,12 @@ export interface Consult {
     idpet: string,
     idveterinary: string,
     pet?: Pet,
-    veterinary?: Veterinary
+    veterinary?: Veterinary,
+    total: number
 }
 
 export function Consult(data: any, id?: string){
-    const { observation, price, status, prescription, idpet, idveterinary, pet, veterinary } = data;
+    const { observation, price, status, prescription, idpet, idveterinary, pet, veterinary, total } = data;
     let object : Consult = {
         idconsult: id,
         date: new Date().toDateString(),
@@ -28,7 +29,8 @@ export function Consult(data: any, id?: string){
         idpet: idpet,
         idveterinary: idveterinary,
         pet: pet,
-        veterinary: veterinary
+        veterinary: veterinary,
+        total: total
     }
     return object;
 }
