@@ -11,7 +11,8 @@ const collection = "clients";
 //--------------------------------------------------------------------------------------------------------////
 export async function createClient(req:Request, res: Response){
     try{
-        const newClient = Client(req.body); 
+        const { email } = res.locals;
+        const newClient = Client(req.body, undefined, email); 
         const clientAdded = await (await db.collection(collection).add(newClient));         
         return res.status(201).json(Message('Client added', `Client was added with id: ${clientAdded.id}`, 'success'));
     }catch(err){

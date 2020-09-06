@@ -6,10 +6,12 @@ export interface Client {
     lastname: string,
     borndate: Date, 
     direction: string,
-    gender: string
+    gender: string,
+    created_by?: string,
+    creation_date: string
 };
 
-export function Client(data: any, id?: string){
+export function Client(data: any, id?: string, username?: string){
     const { ci, phone, name, lastname, borndate, direction, gender } = data
     let object: Client = {
         idclient: id,
@@ -20,6 +22,8 @@ export function Client(data: any, id?: string){
         borndate: borndate,
         direction: direction,
         gender: gender,
+        created_by: username,
+        creation_date: new Date().toUTCString()
     }
     return object
 }

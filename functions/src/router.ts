@@ -6,16 +6,17 @@ import { createVeterinary, retrieveVeterinary, updateVeterinary, deleteVeterinar
 import { createConsult, retrieveConsult, updateConsult, deleteConsult, listConsult, listClientConsult, listPetConsult, listAllConsult, countConsult } from './controllers/consult';
 import { signup } from './controllers/auth';
 import { createMedicine, retrieveMedicine, updateMedicine, deleteMedicine, listMedicine } from './controllers/medicine';
+import { isAuthentificated, isAuthorized } from './middlewere';
 
 export function routeSignUp(app: Application){
     app.post('/api/auth/signup', signup);
 }
 
 export function routesClient(app:Application){
-    app.post('/api/clients', createClient);
+    app.post('/api/clients', [isAuthentificated, isAuthorized({hasRole: ['veterinary']}), createClient]);
     app.get('/api/clients/:id', retrieveClient);
     app.put('/api/clients/:id', updateClient);
-    app.delete('/api/clients/:id', deleteClient);
+    app.delete('/api/clients/:id', [isAuthentificated, isAuthorized({hasRole: ['veterinary']}),deleteClient]);
     app.get('/api/clients/interval/:limit/:last', listClients);
     app.get('/api/count/clients', countClient);
     app.get('/api/page/clients/:page/:limit', listClient);
@@ -69,3 +70,5 @@ export function routesMedicines(app: Application){
     app.delete('/api/medicines/:id', deleteMedicine);
     app.get('/api/medicines', listMedicine)
 }
+
+
