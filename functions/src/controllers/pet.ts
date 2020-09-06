@@ -116,6 +116,33 @@ export async function listPets(req:Request, res: Response){
     }
 }
 
+export async function countPetTypes(req: Request, res:Response){
+    try{
+
+        const numberDogs = await db.collection(collection).where("type", "==", "Perro").get();
+        const numberHamsters = await db.collection(collection).where("type", "==", "Hamster").get();
+        const numberCats = await db.collection(collection).where("type", "==", "Gato").get();
+        const numberOthers = await db.collection(collection).where("type", "==", "Otros").get();
+        const numberPericos = await db.collection(collection).where("type", "==", "Perico").get();
+        const numbeTortugas = await db.collection(collection).where("type", "==", "Tortuga").get();
+        const numbeQuindes = await db.collection(collection).where("type", "==", "Quinde").get();
+        const numbeGolondrina = await db.collection(collection).where("type", "==", "Golondrina").get();
+        return res.status(200).json(    
+                                    {numberCats: numberCats.size,
+                                    numberDogs: numberDogs.size,
+                                    numberHamsters: numberHamsters.size,
+                                    numberOthers: numberOthers.size,
+                                    numberPericos: numberPericos.size,
+                                    numbeTortugas: numbeTortugas.size,
+                                    numbeQuindes: numbeQuindes.size,
+                                    numbeGolondrina: numbeGolondrina.size
+        })
+    }catch(err){
+        return handleError(res, err);
+    }
+} 
+
+
 function handleError(res: Response, err:any){
     res.status(500).send({message: `${err.code} - ${err.message}`})
 }

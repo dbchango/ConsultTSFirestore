@@ -18,10 +18,10 @@ export interface Consult {
 }
 
 export function Consult(data: any, id?: string){
-    const { observation, price, status, prescription, idpet, idveterinary, pet, veterinary, total } = data;
+    const { date,observation, price, status, prescription, idpet, idveterinary, pet, veterinary, total } = data;
     let object : Consult = {
         idconsult: id,
-        date: new Date().toDateString(),
+        date: new Date(date).toLocaleDateString(),
         observation: observation,
         prescription: prescription,
         price: price,

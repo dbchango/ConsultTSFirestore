@@ -88,6 +88,10 @@ export async function listClient(req:Request, res: Response){
     }
     
 }
+
+
+
+
 //list codes by interval
 function handleError(res: Response, err:any){
     res.status(500).send({message: `${err.code} - ${err.message}`})

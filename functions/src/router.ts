@@ -1,7 +1,7 @@
 import { Application } from 'express';
 import { createClient, retrieveClient, updateClient, deleteClient, listClients, countClient, listClient } from './controllers/client';
 import { createVaccine, retrieveVaccine, updateVaccine, deleteVaccine, listVaccine } from './controllers/vaccine';
-import { createPet, retrievePet, updatePet, deletePet, countPet, listPet, listClientPets, listPets } from './controllers/pet';
+import { createPet, retrievePet, updatePet, deletePet, countPet, listPet, listClientPets, listPets, countPetTypes } from './controllers/pet';
 import { createVeterinary, retrieveVeterinary, updateVeterinary, deleteVeterinary, listVeterinary } from './controllers/veterinary';
 import { createConsult, retrieveConsult, updateConsult, deleteConsult, listConsult, listClientConsult, listPetConsult, listAllConsult, countConsult } from './controllers/consult';
 import { signup } from './controllers/auth';
@@ -58,6 +58,7 @@ export function routesPet(app: Application){
     app.get('/api/clients/:id/pets/page/:page/:limit', listPet);
     app.get('/api/pets/:id/consults', listPetConsult);
     app.get('/api/pets', listPets);
+    app.get('/api/count/pet/types', countPetTypes);
 }
 
 
