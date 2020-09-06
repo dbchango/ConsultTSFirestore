@@ -16,6 +16,7 @@ admin.initializeApp({
   databaseURL: "https://consultoriovet-eb010.firebaseio.com"
 });
 */
+
 const db = admin.firestore();
 db.settings({ignoreUndefinedProperties : true});
 
