@@ -1,34 +1,36 @@
-import { Client } from "./client";
+
 import { Pet } from "./pet";
 import { Veterinary } from "./veterinary";
+import { Prescription } from "./prescription";
 
 export interface Consult {
     idconsult?: string;
     date: string,
     observation: string,
     price: number,
-    responsable: string,
     status: number, 
+    prescription: Array<Prescription>,
     idpet: string,
-    idclient: string
+    idveterinary: string,
     pet?: Pet,
-    client?: Client,
-    veterinary?: Veterinary
+    veterinary?: Veterinary,
+    total: number
 }
 
 export function Consult(data: any, id?: string){
-    const { observation, price, responsable, status, idpet, idclient, pet, client } = data;
+    const { date,observation, price, status, prescription, idpet, idveterinary, pet, veterinary, total } = data;
     let object : Consult = {
         idconsult: id,
-        date: new Date().toDateString(),
+        date: new Date(date).toLocaleDateString(),
         observation: observation,
+        prescription: prescription,
         price: price,
-        responsable: responsable,
         status: status,
         idpet: idpet,
-        idclient: idclient,
-        pet: Pet(pet, pet.id),
-        client: Client( client, client.id)
+        idveterinary: idveterinary,
+        pet: pet,
+        veterinary: veterinary,
+        total: total
     }
     return object;
 }
